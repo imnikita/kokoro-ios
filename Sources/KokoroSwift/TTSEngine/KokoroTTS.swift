@@ -157,6 +157,7 @@ public final class KokoroTTS: Module {
   ///   - bits: Number of bits per weight (default: 4)
   public func quantizeWeights(groupSize: Int = 64, bits: Int = 4) {
     MLXNN.quantize(model: self, groupSize: groupSize, bits: bits)
+    MLX.eval(parameters())
   }
   
   /// Generates audio from text using the specified voice and parameters.
