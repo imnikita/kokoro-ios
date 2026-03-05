@@ -47,12 +47,6 @@ class AdainResBlk1d: Module {
       )
     }
 
-    super.init()
-
-    buildWeights(weights: weights, weightKeyPrefix: weightKeyPrefix, dimIn: dimIn, dimOut: dimOut, styleDim: styleDim)
-  }
-
-  func buildWeights(weights: [String: MLXArray], weightKeyPrefix: String, dimIn: Int, dimOut _: Int, styleDim: Int) {
     conv1 = ConvWeighted(
       weightG: weights[weightKeyPrefix + ".conv1.weight_g"]!,
       weightV: weights[weightKeyPrefix + ".conv1.weight_v"]!,
@@ -83,7 +77,7 @@ class AdainResBlk1d: Module {
       fcBias: weights[weightKeyPrefix + ".norm2.fc.bias"]!
     )
 
-    if learned_sc {
+    if dimIn != dimOut {
       conv1x1 = ConvWeighted(
         weightG: weights[weightKeyPrefix + ".conv1x1.weight_g"]!,
         weightV: weights[weightKeyPrefix + ".conv1x1.weight_v"]!,
@@ -92,6 +86,8 @@ class AdainResBlk1d: Module {
         padding: 0
       )
     }
+
+    super.init()
   }
 
   func shortcut(_ x: MLXArray) -> MLXArray {

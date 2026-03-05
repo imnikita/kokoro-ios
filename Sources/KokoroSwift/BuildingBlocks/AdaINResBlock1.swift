@@ -25,42 +25,45 @@ class AdaINResBlock1: Module {
     dilation: [Int] = [1, 3, 5],
     styleDim: Int = 64
   ) {
-    super.init()
+    let padding = { (ks: Int, d: Int) -> Int in Int((ks * d - d) / 2) }
+
+    var localConvs1: [ConvWeighted] = []
+    var localConvs2: [ConvWeighted] = []
+    var localAdain1: [AdaIN1d] = []
+    var localAdain2: [AdaIN1d] = []
 
     for i in 0 ..< 3 {
       let dilationValue = dilation[i]
-      let conv = ConvWeighted(
+      localConvs1.append(ConvWeighted(
         weightG: weights[weightPrefixKey + ".convs1.\(i).weight_g"]!,
         weightV: weights[weightPrefixKey + ".convs1.\(i).weight_v"]!,
         bias: weights[weightPrefixKey + ".convs1.\(i).bias"]!,
         stride: 1,
-        padding: getPadding(kernelSize: kernelSize, dilation: dilationValue),
+        padding: padding(kernelSize, dilationValue),
         dilation: dilationValue
-      )
-      convs1.append(conv)
+      ))
     }
 
-    for i in 0 ..< convs1.count {
-      let conv = ConvWeighted(
+    for i in 0 ..< 3 {
+      localConvs2.append(ConvWeighted(
         weightG: weights[weightPrefixKey + ".convs2.\(i).weight_g"]!,
         weightV: weights[weightPrefixKey + ".convs2.\(i).weight_v"]!,
         bias: weights[weightPrefixKey + ".convs2.\(i).bias"]!,
         stride: 1,
-        padding: getPadding(kernelSize: kernelSize, dilation: 1),
+        padding: padding(kernelSize, 1),
         dilation: 1
-      )
-      convs2.append(conv)
+      ))
     }
 
-    for i in 0 ..< convs1.count {
-      adain1.append(AdaIN1d(
+    for i in 0 ..< 3 {
+      localAdain1.append(AdaIN1d(
         styleDim: styleDim,
         numFeatures: channels,
         fcWeight: weights[weightPrefixKey + ".adain1.\(i).fc.weight"]!,
         fcBias: weights[weightPrefixKey + ".adain1.\(i).fc.bias"]!
       ))
 
-      adain2.append(AdaIN1d(
+      localAdain2.append(AdaIN1d(
         styleDim: styleDim,
         numFeatures: channels,
         fcWeight: weights[weightPrefixKey + ".adain2.\(i).fc.weight"]!,
@@ -68,7 +71,14 @@ class AdaINResBlock1: Module {
       ))
     }
 
-    for i in 0 ..< convs1.count {
+    convs1 = localConvs1
+    convs2 = localConvs2
+    adain1 = localAdain1
+    adain2 = localAdain2
+
+    super.init()
+
+    for i in 0 ..< 3 {
       alpha1.append(weights[weightPrefixKey + ".alpha1.\(i)"]!)
       alpha2.append(weights[weightPrefixKey + ".alpha2.\(i)"]!)
     }
