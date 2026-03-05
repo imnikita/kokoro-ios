@@ -13,16 +13,16 @@ import MLXNN
 /// 3. **Bidirectional LSTM**: Captures long-range dependencies in both directions
 ///
 /// The output embeddings are used by the decoder to generate speech aligned with the input text.
-final class TextEncoder {
+final class TextEncoder: Module {
   /// Embedding layer that converts token IDs to dense vectors
-  let embedding: Embedding
-  
+  var embedding: Embedding
+
   /// Stack of CNN blocks for local feature extraction
   /// Each block contains: [ConvWeighted, LayerNorm, Activation]
-  let cnn: [[Module]]
-  
+  var cnn: [[Module]]
+
   /// Bidirectional LSTM for capturing sequential dependencies
-  let lstm: LSTM
+  var lstm: LSTM
   
   /// Initializes the text encoder with pretrained weights.
   /// - Parameters:
@@ -74,6 +74,8 @@ final class TextEncoder {
       biasIhBackward: weights["text_encoder.lstm.bias_ih_l0_reverse"]!,
       biasHhBackward: weights["text_encoder.lstm.bias_hh_l0_reverse"]!
     )
+
+    super.init()
   }
   
   /// Forward pass. Encodes input token sequences into contextual embeddings.

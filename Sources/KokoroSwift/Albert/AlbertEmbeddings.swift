@@ -5,17 +5,20 @@ import Foundation
 import MLX
 import MLXNN
 
-class AlbertEmbeddings {
-  let wordEmbeddings: Embedding
-  let positionEmbeddings: Embedding
-  let tokenTypeEmbeddings: Embedding
-  let layerNorm: LayerNorm
+class AlbertEmbeddings: Module {
+  var wordEmbeddings: Embedding
+  var positionEmbeddings: Embedding
+  var tokenTypeEmbeddings: Embedding
+  var layerNorm: LayerNorm
 
   init(weights: [String: MLXArray], config: AlbertModelArgs) {
     wordEmbeddings = Embedding(weight: weights["bert.embeddings.word_embeddings.weight"]!)
     positionEmbeddings = Embedding(weight: weights["bert.embeddings.position_embeddings.weight"]!)
     tokenTypeEmbeddings = Embedding(weight: weights["bert.embeddings.token_type_embeddings.weight"]!)
     layerNorm = LayerNorm(dimensions: config.embeddingSize, eps: config.layerNormEps)
+
+    super.init()
+
     let layerNormWeights = weights["bert.embeddings.LayerNorm.weight"]!
     let layerNormBiases = weights["bert.embeddings.LayerNorm.bias"]!
 

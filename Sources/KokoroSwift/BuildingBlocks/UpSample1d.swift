@@ -5,9 +5,9 @@ import Foundation
 import MLX
 import MLXNN
 
-class UpSample1d {
+class UpSample1d: Module {
   private let layerType: String
-  private let interpolate: Upsample
+  private var interpolate: Upsample
 
   init(layerType: String) {
     self.layerType = layerType
@@ -15,6 +15,8 @@ class UpSample1d {
       scaleFactor: 2.0,
       mode: .nearest
     )
+
+    super.init()
   }
 
   func callAsFunction(_ x: MLXArray) -> MLXArray {

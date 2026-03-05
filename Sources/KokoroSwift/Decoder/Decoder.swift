@@ -5,13 +5,13 @@ import Foundation
 import MLX
 import MLXNN
 
-class Decoder {
-  private let encode: AdainResBlk1d
+class Decoder: Module {
+  private var encode: AdainResBlk1d
   private var decode: [AdainResBlk1d] = []
-  private let F0Conv: ConvWeighted
-  private let NConv: ConvWeighted
-  private let asrRes: [ConvWeighted]
-  private let generator: Generator
+  private var F0Conv: ConvWeighted
+  private var NConv: ConvWeighted
+  private var asrRes: [ConvWeighted]
+  private var generator: Generator
 
   init(
     weights: [String: MLXArray],
@@ -68,6 +68,8 @@ class Decoder {
       genIstftNFft: genIstftNFft,
       genIstftHopSize: genIstftHopSize
     )
+
+    super.init()
   }
 
   func callAsFunction(asr: MLXArray, F0Curve: MLXArray, N: MLXArray, s: MLXArray) -> MLXArray {

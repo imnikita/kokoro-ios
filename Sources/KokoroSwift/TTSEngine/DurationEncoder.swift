@@ -17,7 +17,7 @@ import MLXNN
 ///
 /// The encoder outputs features that are then used by a duration predictor
 /// to determine the temporal alignment of phonemes in the generated speech.
-final class DurationEncoder {
+final class DurationEncoder: Module {
   /// Stack of LSTM and AdaLayerNorm layers that alternate
   /// Even indices: Bidirectional LSTM layers
   /// Odd indices: Adaptive Layer Normalization layers
@@ -62,8 +62,10 @@ final class DurationEncoder {
         )
       }
     }
+
+    super.init()
   }
-  
+
   /// Forward pass. Encodes input features with style conditioning for duration prediction.
   ///
   /// Processing pipeline:

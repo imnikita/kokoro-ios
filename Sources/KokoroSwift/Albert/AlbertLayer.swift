@@ -5,11 +5,11 @@ import Foundation
 import MLX
 import MLXNN
 
-class AlbertLayer {
-  let attention: AlbertSelfAttention
-  let fullLayerLayerNorm: LayerNorm
-  let ffn: Linear
-  let ffnOutput: Linear
+class AlbertLayer: Module {
+  var attention: AlbertSelfAttention
+  var fullLayerLayerNorm: LayerNorm
+  var ffn: Linear
+  var ffnOutput: Linear
 
   init(weights: [String: MLXArray], config: AlbertModelArgs, layerNum: Int, innerGroupNum: Int) {
     attention = AlbertSelfAttention(weights: weights, config: config, layerNum: layerNum, innerGroupNum: innerGroupNum)
@@ -18,6 +18,8 @@ class AlbertLayer {
     ffnOutput = Linear(weight: weights["bert.encoder.albert_layer_groups.\(layerNum).albert_layers.\(innerGroupNum).ffn_output.weight"]!,
                        bias: weights["bert.encoder.albert_layer_groups.\(layerNum).albert_layers.\(innerGroupNum).ffn_output.bias"]!)
     fullLayerLayerNorm = LayerNorm(dimensions: config.hiddenSize, eps: config.layerNormEps)
+
+    super.init()
 
     let fullLayerLayerNormWeights = weights["bert.encoder.albert_layer_groups.\(layerNum).albert_layers.\(innerGroupNum).full_layer_layer_norm.weight"]!
     let fullLayerLayerNormBiases = weights["bert.encoder.albert_layer_groups.\(layerNum).albert_layers.\(innerGroupNum).full_layer_layer_norm.bias"]!

@@ -5,7 +5,7 @@ import Foundation
 import MLX
 import MLXNN
 
-class AdaINResBlock1 {
+class AdaINResBlock1: Module {
   var convs1: [ConvWeighted] = []
   var convs2: [ConvWeighted] = []
   var adain1: [AdaIN1d] = []
@@ -25,6 +25,8 @@ class AdaINResBlock1 {
     dilation: [Int] = [1, 3, 5],
     styleDim: Int = 64
   ) {
+    super.init()
+
     for i in 0 ..< 3 {
       let dilationValue = dilation[i]
       let conv = ConvWeighted(

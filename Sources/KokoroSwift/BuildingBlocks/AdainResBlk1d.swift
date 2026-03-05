@@ -5,13 +5,13 @@ import Foundation
 import MLX
 import MLXNN
 
-class AdainResBlk1d {
-  let actv: LeakyReLU
+class AdainResBlk1d: Module {
+  var actv: LeakyReLU
   let dimIn: Int
   let upsampleType: String
-  let upsample: UpSample1d
+  var upsample: UpSample1d
   let learned_sc: Bool
-  let pool: Module
+  var pool: Module
 
   var conv1: ConvWeighted!
   var conv2: ConvWeighted!
@@ -46,6 +46,8 @@ class AdainResBlk1d {
         groups: dimIn
       )
     }
+
+    super.init()
 
     buildWeights(weights: weights, weightKeyPrefix: weightKeyPrefix, dimIn: dimIn, dimOut: dimOut, styleDim: styleDim)
   }

@@ -22,36 +22,36 @@ import MLXUtilsLibrary
 ///                                       text: "Hello world",
 ///                                       speed: 1.0)
 /// ```
-public final class KokoroTTS {
+public final class KokoroTTS: Module {
   /// Errors from the TTS side
   public enum KokoroTTSError: Error {
     /// Thrown when input text exceeds maximum token count
     case tooManyTokens
   }
-  
+
   /// BERT model for encoding phoneme sequences
-  private let bert: CustomAlbert!
-  
+  private var bert: CustomAlbert!
+
   /// Linear layer to project BERT embeddings
-  private let bertEncoder: Linear!
-  
+  private var bertEncoder: Linear!
+
   /// Encoder for duration prediction features
-  private let durationEncoder: DurationEncoder!
-  
+  private var durationEncoder: DurationEncoder!
+
   /// Bidirectional LSTM for duration prediction
-  private let predictorLSTM: LSTM!
-  
+  private var predictorLSTM: LSTM!
+
   /// Projection layer for final duration values
-  private let durationProj: Linear!
-  
+  private var durationProj: Linear!
+
   /// Predictor for prosodic features (F0, pitch)
-  private let prosodyPredictor: ProsodyPredictor!
-  
+  private var prosodyPredictor: ProsodyPredictor!
+
   /// Text encoder that processes phoneme sequences
-  private let textEncoder: TextEncoder!
-  
+  private var textEncoder: TextEncoder!
+
   /// Decoder that generates audio from encoded features
-  private let decoder: Decoder!
+  private var decoder: Decoder!
   
   /// Grapheme-to-phoneme processor for text conversion
   private let g2pProcessor: G2PProcessor?
@@ -147,6 +147,16 @@ public final class KokoroTTS {
 
     // Initialize G2P processor for text-to-phoneme conversion
     g2pProcessor = try? G2PFactory.createG2PProcessor(engine: g2p)
+
+    super.init()
+  }
+
+  /// Quantizes model weights to reduce memory and speed up inference.
+  /// - Parameters:
+  ///   - groupSize: Number of weights per quantization group (default: 64)
+  ///   - bits: Number of bits per weight (default: 4)
+  public func quantizeWeights(groupSize: Int = 64, bits: Int = 4) {
+    MLXNN.quantize(model: self, groupSize: groupSize, bits: bits)
   }
   
   /// Generates audio from text using the specified voice and parameters.

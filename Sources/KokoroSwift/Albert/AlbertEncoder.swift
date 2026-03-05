@@ -5,10 +5,10 @@ import Foundation
 import MLX
 import MLXNN
 
-class AlbertEncoder {
+class AlbertEncoder: Module {
   let config: AlbertModelArgs
-  let embeddingHiddenMappingIn: Linear
-  let albertLayerGroups: [AlbertLayerGroup]
+  var embeddingHiddenMappingIn: Linear
+  var albertLayerGroups: [AlbertLayerGroup]
 
   init(weights: [String: MLXArray], config: AlbertModelArgs) {
     self.config = config
@@ -20,6 +20,8 @@ class AlbertEncoder {
       groups.append(AlbertLayerGroup(config: config, layerNum: layerNum, weights: weights))
     }
     albertLayerGroups = groups
+
+    super.init()
   }
 
   func callAsFunction(

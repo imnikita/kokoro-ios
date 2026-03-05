@@ -5,16 +5,16 @@ import Foundation
 import MLX
 import MLXNN
 
-class AlbertSelfAttention {
+class AlbertSelfAttention: Module {
   let numAttentionHeads: Int
   let attentionHeadSize: Int
   let allHeadSize: Int
 
-  let query: Linear
-  let key: Linear
-  let value: Linear
-  let dense: Linear
-  let layerNorm: LayerNorm
+  var query: Linear
+  var key: Linear
+  var value: Linear
+  var dense: Linear
+  var layerNorm: LayerNorm
 
   init(weights: [String: MLXArray], config: AlbertModelArgs, layerNum: Int, innerGroupNum: Int) {
     numAttentionHeads = config.numAttentionHeads
@@ -31,6 +31,8 @@ class AlbertSelfAttention {
                    bias: weights["bert.encoder.albert_layer_groups.\(layerNum).albert_layers.\(innerGroupNum).attention.dense.bias"]!)
 
     layerNorm = LayerNorm(dimensions: config.hiddenSize, eps: config.layerNormEps)
+
+    super.init()
 
     let layerNormWeights = weights["bert.encoder.albert_layer_groups.\(layerNum).albert_layers.\(innerGroupNum).attention.LayerNorm.weight"]!
     let layerNormBiases = weights["bert.encoder.albert_layer_groups.\(layerNum).albert_layers.\(innerGroupNum).attention.LayerNorm.bias"]!

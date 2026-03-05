@@ -18,24 +18,24 @@ import MLXNN
 ///
 /// These prosodic features are essential for generating natural-sounding,
 /// expressive speech with proper intonation and rhythm.
-final class ProsodyPredictor {
+final class ProsodyPredictor: Module {
   /// Shared bidirectional LSTM for processing input features
   /// Captures temporal dependencies before branching into F0 and N predictions
-  let shared: LSTM
-  
+  var shared: LSTM
+
   /// Stack of AdaIN residual blocks for F0 (pitch) prediction
   /// Includes upsampling to match the target temporal resolution
-  let F0: [AdainResBlk1d]
-  
+  var F0: [AdainResBlk1d]
+
   /// Stack of AdaIN residual blocks for N (voicing) prediction
   /// Parallel to F0 branch with similar architecture
-  let N: [AdainResBlk1d]
-  
+  var N: [AdainResBlk1d]
+
   /// Projection layer to convert F0 features to single-channel output
-  let F0Proj: Conv1dInference
-  
+  var F0Proj: Conv1dInference
+
   /// Projection layer to convert N features to single-channel output
-  let NProj: Conv1dInference
+  var NProj: Conv1dInference
   
   /// Initializes the prosody predictor with pretrained weights.
   /// - Parameters:
@@ -99,6 +99,8 @@ final class ProsodyPredictor {
       weight: weights["predictor.N_proj.weight"]!,
       bias: weights["predictor.N_proj.bias"]!
     )
+
+    super.init()
   }
 
   /// Forward pass. Predicts F0 (pitch) and N (voicing) curves from input features.

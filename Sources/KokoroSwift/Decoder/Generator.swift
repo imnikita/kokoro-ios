@@ -5,18 +5,18 @@ import Foundation
 import MLX
 import MLXNN
 
-class Generator {
+class Generator: Module {
   let numKernels: Int
   let numUpsamples: Int
-  let mSource: SourceModuleHnNSF
-  let f0Upsample: Upsample
+  var mSource: SourceModuleHnNSF
+  var f0Upsample: Upsample
   let postNFFt: Int
   var noiseConvs: [Conv1dInference]
   var noiseRes: [AdaINResBlock1]
   var ups: [ConvWeighted]
   var resBlocks: [AdaINResBlock1]
-  let convPost: ConvWeighted
-  let reflectionPad: ReflectionPad1d
+  var convPost: ConvWeighted
+  var reflectionPad: ReflectionPad1d
   let stft: MLXSTFT
 
   init(weights: [String: MLXArray],
@@ -142,6 +142,8 @@ class Generator {
       hopLength: genIstftHopSize,
       winLength: genIstftNFft
     )
+
+    super.init()
   }
 
   func callAsFunction(_ x: MLXArray, _ s: MLXArray, _ F0Curve: MLXArray) -> MLXArray {
