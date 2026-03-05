@@ -156,7 +156,11 @@ public final class KokoroTTS: Module {
   ///   - groupSize: Number of weights per quantization group (default: 64)
   ///   - bits: Number of bits per weight (default: 4)
   public func quantizeWeights(groupSize: Int = 64, bits: Int = 4) {
-    MLXNN.quantize(model: self, groupSize: groupSize, bits: bits)
+    MLXNN.quantize(model: self, groupSize: groupSize, bits: bits, filter: { _, module in
+      guard let linear = module as? Linear else { return true }
+      let lastDim = linear.weight.shape.last ?? 0
+      return lastDim % groupSize == 0
+    })
     MLX.eval(parameters())
   }
   
