@@ -6,10 +6,10 @@ import MLX
 import MLXNN
 
 class AdaINResBlock1: Module {
-  var convs1: [ConvWeighted] = []
-  var convs2: [ConvWeighted] = []
-  var adain1: [AdaIN1d] = []
-  var adain2: [AdaIN1d] = []
+  @ModuleInfo var convs1: [ConvWeighted] = []
+  @ModuleInfo var convs2: [ConvWeighted] = []
+  @ModuleInfo var adain1: [AdaIN1d] = []
+  @ModuleInfo var adain2: [AdaIN1d] = []
   var alpha1: [MLXArray] = []
   var alpha2: [MLXArray] = []
 

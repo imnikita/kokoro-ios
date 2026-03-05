@@ -6,10 +6,10 @@ import MLX
 import MLXNN
 
 class AlbertLayer: Module {
-  var attention: AlbertSelfAttention
-  var fullLayerLayerNorm: LayerNorm
-  var ffn: Linear
-  var ffnOutput: Linear
+  @ModuleInfo var attention: AlbertSelfAttention
+  @ModuleInfo var fullLayerLayerNorm: LayerNorm
+  @ModuleInfo var ffn: Linear
+  @ModuleInfo var ffnOutput: Linear
 
   init(weights: [String: MLXArray], config: AlbertModelArgs, layerNum: Int, innerGroupNum: Int) {
     attention = AlbertSelfAttention(weights: weights, config: config, layerNum: layerNum, innerGroupNum: innerGroupNum)

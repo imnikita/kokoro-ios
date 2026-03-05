@@ -10,11 +10,11 @@ class AlbertSelfAttention: Module {
   let attentionHeadSize: Int
   let allHeadSize: Int
 
-  var query: Linear
-  var key: Linear
-  var value: Linear
-  var dense: Linear
-  var layerNorm: LayerNorm
+  @ModuleInfo var query: Linear
+  @ModuleInfo var key: Linear
+  @ModuleInfo var value: Linear
+  @ModuleInfo var dense: Linear
+  @ModuleInfo var layerNorm: LayerNorm
 
   init(weights: [String: MLXArray], config: AlbertModelArgs, layerNum: Int, innerGroupNum: Int) {
     numAttentionHeads = config.numAttentionHeads

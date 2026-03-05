@@ -7,7 +7,7 @@ import MLXNN
 
 class AdaIN1d: Module {
   private let norm: InstanceNorm1d
-  private var fc: Linear
+  @ModuleInfo private var fc: Linear
 
   public init(styleDim _: Int, numFeatures: Int, fcWeight: MLXArray, fcBias: MLXArray) {
     norm = InstanceNorm1d(numFeatures: numFeatures, affine: false)

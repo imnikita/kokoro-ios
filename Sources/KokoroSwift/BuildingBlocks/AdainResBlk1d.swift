@@ -6,18 +6,18 @@ import MLX
 import MLXNN
 
 class AdainResBlk1d: Module {
-  var actv: LeakyReLU
+  @ModuleInfo var actv: LeakyReLU
   let dimIn: Int
   let upsampleType: String
-  var upsample: UpSample1d
+  @ModuleInfo var upsample: UpSample1d
   let learned_sc: Bool
-  var pool: Module
+  @ModuleInfo var pool: Module
 
-  var conv1: ConvWeighted!
-  var conv2: ConvWeighted!
-  var norm1: AdaIN1d!
-  var norm2: AdaIN1d!
-  var conv1x1: ConvWeighted?
+  @ModuleInfo var conv1: ConvWeighted!
+  @ModuleInfo var conv2: ConvWeighted!
+  @ModuleInfo var norm1: AdaIN1d!
+  @ModuleInfo var norm2: AdaIN1d!
+  @ModuleInfo var conv1x1: ConvWeighted?
 
   init(
     weights: [String: MLXArray],

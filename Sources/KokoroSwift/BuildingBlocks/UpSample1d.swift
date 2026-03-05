@@ -7,7 +7,7 @@ import MLXNN
 
 class UpSample1d: Module {
   private let layerType: String
-  private var interpolate: Upsample
+  @ModuleInfo private var interpolate: Upsample
 
   init(layerType: String) {
     self.layerType = layerType

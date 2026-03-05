@@ -30,28 +30,28 @@ public final class KokoroTTS: Module {
   }
 
   /// BERT model for encoding phoneme sequences
-  private var bert: CustomAlbert!
+  @ModuleInfo private var bert: CustomAlbert!
 
   /// Linear layer to project BERT embeddings
-  private var bertEncoder: Linear!
+  @ModuleInfo private var bertEncoder: Linear!
 
   /// Encoder for duration prediction features
-  private var durationEncoder: DurationEncoder!
+  @ModuleInfo private var durationEncoder: DurationEncoder!
 
   /// Bidirectional LSTM for duration prediction
-  private var predictorLSTM: LSTM!
+  @ModuleInfo private var predictorLSTM: LSTM!
 
   /// Projection layer for final duration values
-  private var durationProj: Linear!
+  @ModuleInfo private var durationProj: Linear!
 
   /// Predictor for prosodic features (F0, pitch)
-  private var prosodyPredictor: ProsodyPredictor!
+  @ModuleInfo private var prosodyPredictor: ProsodyPredictor!
 
   /// Text encoder that processes phoneme sequences
-  private var textEncoder: TextEncoder!
+  @ModuleInfo private var textEncoder: TextEncoder!
 
   /// Decoder that generates audio from encoded features
-  private var decoder: Decoder!
+  @ModuleInfo private var decoder: Decoder!
   
   /// Grapheme-to-phoneme processor for text conversion
   private let g2pProcessor: G2PProcessor?

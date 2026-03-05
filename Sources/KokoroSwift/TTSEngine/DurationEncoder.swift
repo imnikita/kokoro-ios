@@ -21,7 +21,7 @@ final class DurationEncoder: Module {
   /// Stack of LSTM and AdaLayerNorm layers that alternate
   /// Even indices: Bidirectional LSTM layers
   /// Odd indices: Adaptive Layer Normalization layers
-  var lstms: [Module] = []
+  @ModuleInfo var lstms: [Module] = []
   
   /// Initializes the duration encoder with pretrained weights.
   ///
@@ -35,10 +35,11 @@ final class DurationEncoder: Module {
   ///   - nlayers: Number of LSTM/AdaLN layer pairs to create
   init(weights: [String: MLXArray], dModel: Int, styDim: Int, nlayers: Int) {
     // Build nlayers pairs of (LSTM, AdaLayerNorm)
+    var localLstms: [Module] = []
     for i in 0 ..< nlayers * 2 {
       // Even indices: Create bidirectional LSTM layers
       if i % 2 == 0 {
-        lstms.append(
+        localLstms.append(
           LSTM(
             inputSize: dModel + styDim,  // Input includes both features and style
             hiddenSize: dModel / 2,       // Half size because bidirectional
@@ -54,7 +55,7 @@ final class DurationEncoder: Module {
         )
       // Odd indices: Create adaptive layer normalization
       } else {
-        lstms.append(
+        localLstms.append(
           AdaLayerNorm(
             weight: weights["predictor.text_encoder.lstms.\(i).fc.weight"]!,
             bias: weights["predictor.text_encoder.lstms.\(i).fc.bias"]!
@@ -62,6 +63,7 @@ final class DurationEncoder: Module {
         )
       }
     }
+    lstms = localLstms
 
     super.init()
   }

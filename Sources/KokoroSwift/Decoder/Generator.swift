@@ -8,15 +8,15 @@ import MLXNN
 class Generator: Module {
   let numKernels: Int
   let numUpsamples: Int
-  var mSource: SourceModuleHnNSF
-  var f0Upsample: Upsample
+  @ModuleInfo var mSource: SourceModuleHnNSF
+  @ModuleInfo var f0Upsample: Upsample
   let postNFFt: Int
   var noiseConvs: [Conv1dInference]
-  var noiseRes: [AdaINResBlock1]
-  var ups: [ConvWeighted]
-  var resBlocks: [AdaINResBlock1]
-  var convPost: ConvWeighted
-  var reflectionPad: ReflectionPad1d
+  @ModuleInfo var noiseRes: [AdaINResBlock1]
+  @ModuleInfo var ups: [ConvWeighted]
+  @ModuleInfo var resBlocks: [AdaINResBlock1]
+  @ModuleInfo var convPost: ConvWeighted
+  @ModuleInfo var reflectionPad: ReflectionPad1d
   let stft: MLXSTFT
 
   init(weights: [String: MLXArray],
@@ -45,12 +45,13 @@ class Generator: Module {
 
     f0Upsample = Upsample(scaleFactor: .float(Float(upsampleScaleNumVal)))
 
-    noiseConvs = []
-    noiseRes = []
-    ups = []
+    var localNoiseConvs: [Conv1dInference] = []
+    var localNoiseRes: [AdaINResBlock1] = []
+    var localUps: [ConvWeighted] = []
+    var localResBlocks: [AdaINResBlock1] = []
 
     for (i, (u, k)) in zip(upsampleRates, upsampleKernelSizes).enumerated() {
-      ups.append(
+      localUps.append(
         ConvWeighted(
           weightG: weights["decoder.generator.ups.\(i).weight_g"]!,
           weightV: weights["decoder.generator.ups.\(i).weight_v"]!,
@@ -61,11 +62,10 @@ class Generator: Module {
       )
     }
 
-    resBlocks = []
-    for i in 0 ..< ups.count {
+    for i in 0 ..< localUps.count {
       let ch = upsampleInitialChannel / Int(pow(2.0, Double(i + 1)))
       for (j, (k, d)) in zip(resblockKernelSizes, resblockDilationSizes).enumerated() {
-        resBlocks.append(
+        localResBlocks.append(
           AdaINResBlock1(
             weights: weights,
             weightPrefixKey: "decoder.generator.resblocks.\((i * resblockKernelSizes.count) + j)",
@@ -80,7 +80,7 @@ class Generator: Module {
       let cCur = ch
       if i + 1 < upsampleRates.count {
         let strideF0: Int = MLX.product(MLXArray(upsampleRates)[(i + 1)...]).item()
-        noiseConvs.append(
+        localNoiseConvs.append(
           Conv1dInference(
             inputChannels: genIstftNFft + 2,
             outputChannels: cCur,
@@ -92,7 +92,7 @@ class Generator: Module {
           )
         )
 
-        noiseRes.append(
+        localNoiseRes.append(
           AdaINResBlock1(
             weights: weights,
             weightPrefixKey: "decoder.generator.noise_res.\(i)",
@@ -103,7 +103,7 @@ class Generator: Module {
           )
         )
       } else {
-        noiseConvs.append(
+        localNoiseConvs.append(
           Conv1dInference(
             inputChannels: genIstftNFft + 2,
             outputChannels: cCur,
@@ -112,7 +112,7 @@ class Generator: Module {
             bias: weights["decoder.generator.noise_convs.\(i).bias"]!
           )
         )
-        noiseRes.append(
+        localNoiseRes.append(
           AdaINResBlock1(
             weights: weights,
             weightPrefixKey: "decoder.generator.noise_res.\(i)",
@@ -124,6 +124,11 @@ class Generator: Module {
         )
       }
     }
+
+    noiseConvs = localNoiseConvs
+    noiseRes = localNoiseRes
+    ups = localUps
+    resBlocks = localResBlocks
 
     postNFFt = genIstftNFft
 

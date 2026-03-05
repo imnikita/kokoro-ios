@@ -6,10 +6,10 @@ import MLX
 import MLXNN
 
 class AlbertEmbeddings: Module {
-  var wordEmbeddings: Embedding
-  var positionEmbeddings: Embedding
-  var tokenTypeEmbeddings: Embedding
-  var layerNorm: LayerNorm
+  @ModuleInfo var wordEmbeddings: Embedding
+  @ModuleInfo var positionEmbeddings: Embedding
+  @ModuleInfo var tokenTypeEmbeddings: Embedding
+  @ModuleInfo var layerNorm: LayerNorm
 
   init(weights: [String: MLXArray], config: AlbertModelArgs) {
     wordEmbeddings = Embedding(weight: weights["bert.embeddings.word_embeddings.weight"]!)

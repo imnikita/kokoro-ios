@@ -10,7 +10,7 @@ class SourceModuleHnNSF: Module {
   private let sineAmp: Float
   private let noiseStd: Float
   private let lSinGen: SineGen
-  private let lLinear: Linear
+  @ModuleInfo private var lLinear: Linear
 
   init(
     weights: [String: MLXArray],

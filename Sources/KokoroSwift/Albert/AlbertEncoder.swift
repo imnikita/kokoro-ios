@@ -7,8 +7,8 @@ import MLXNN
 
 class AlbertEncoder: Module {
   let config: AlbertModelArgs
-  var embeddingHiddenMappingIn: Linear
-  var albertLayerGroups: [AlbertLayerGroup]
+  @ModuleInfo var embeddingHiddenMappingIn: Linear
+  @ModuleInfo var albertLayerGroups: [AlbertLayerGroup]
 
   init(weights: [String: MLXArray], config: AlbertModelArgs) {
     self.config = config

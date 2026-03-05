@@ -6,12 +6,12 @@ import MLX
 import MLXNN
 
 class Decoder: Module {
-  private var encode: AdainResBlk1d
-  private var decode: [AdainResBlk1d] = []
-  private var F0Conv: ConvWeighted
-  private var NConv: ConvWeighted
-  private var asrRes: [ConvWeighted]
-  private var generator: Generator
+  @ModuleInfo private var encode: AdainResBlk1d
+  @ModuleInfo private var decode: [AdainResBlk1d] = []
+  @ModuleInfo private var F0Conv: ConvWeighted
+  @ModuleInfo private var NConv: ConvWeighted
+  @ModuleInfo private var asrRes: [ConvWeighted]
+  @ModuleInfo private var generator: Generator
 
   init(
     weights: [String: MLXArray],
@@ -28,10 +28,12 @@ class Decoder: Module {
   ) {
     encode = AdainResBlk1d(weights: weights, weightKeyPrefix: "decoder.encode", dimIn: dimIn + 2, dimOut: 1024, styleDim: styleDim)
 
-    decode.append(AdainResBlk1d(weights: weights, weightKeyPrefix: "decoder.decode.0", dimIn: 1024 + 2 + 64, dimOut: 1024, styleDim: styleDim))
-    decode.append(AdainResBlk1d(weights: weights, weightKeyPrefix: "decoder.decode.1", dimIn: 1024 + 2 + 64, dimOut: 1024, styleDim: styleDim))
-    decode.append(AdainResBlk1d(weights: weights, weightKeyPrefix: "decoder.decode.2", dimIn: 1024 + 2 + 64, dimOut: 1024, styleDim: styleDim))
-    decode.append(AdainResBlk1d(weights: weights, weightKeyPrefix: "decoder.decode.3", dimIn: 1024 + 2 + 64, dimOut: 512, styleDim: styleDim, upsample: "true"))
+    decode = [
+      AdainResBlk1d(weights: weights, weightKeyPrefix: "decoder.decode.0", dimIn: 1024 + 2 + 64, dimOut: 1024, styleDim: styleDim),
+      AdainResBlk1d(weights: weights, weightKeyPrefix: "decoder.decode.1", dimIn: 1024 + 2 + 64, dimOut: 1024, styleDim: styleDim),
+      AdainResBlk1d(weights: weights, weightKeyPrefix: "decoder.decode.2", dimIn: 1024 + 2 + 64, dimOut: 1024, styleDim: styleDim),
+      AdainResBlk1d(weights: weights, weightKeyPrefix: "decoder.decode.3", dimIn: 1024 + 2 + 64, dimOut: 512, styleDim: styleDim, upsample: "true"),
+    ]
 
     F0Conv = ConvWeighted(
       weightG: weights["decoder.F0_conv.weight_g"]!,

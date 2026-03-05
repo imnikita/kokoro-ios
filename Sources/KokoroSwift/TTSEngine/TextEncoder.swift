@@ -15,14 +15,14 @@ import MLXNN
 /// The output embeddings are used by the decoder to generate speech aligned with the input text.
 final class TextEncoder: Module {
   /// Embedding layer that converts token IDs to dense vectors
-  var embedding: Embedding
+  @ModuleInfo var embedding: Embedding
 
   /// Stack of CNN blocks for local feature extraction
   /// Each block contains: [ConvWeighted, LayerNorm, Activation]
-  var cnn: [[Module]]
+  @ModuleInfo var cnn: [[Module]]
 
   /// Bidirectional LSTM for capturing sequential dependencies
-  var lstm: LSTM
+  @ModuleInfo var lstm: LSTM
   
   /// Initializes the text encoder with pretrained weights.
   /// - Parameters:

@@ -7,7 +7,7 @@ import MLXNN
 
 class AdaLayerNorm: Module {
   let eps: Float
-  let fc: Linear
+  @ModuleInfo var fc: Linear
 
   init(eps: Float = 1e-5, weight: MLXArray, bias: MLXArray?) {
     self.eps = eps

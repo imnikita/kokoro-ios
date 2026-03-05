@@ -21,15 +21,15 @@ import MLXNN
 final class ProsodyPredictor: Module {
   /// Shared bidirectional LSTM for processing input features
   /// Captures temporal dependencies before branching into F0 and N predictions
-  var shared: LSTM
+  @ModuleInfo var shared: LSTM
 
   /// Stack of AdaIN residual blocks for F0 (pitch) prediction
   /// Includes upsampling to match the target temporal resolution
-  var F0: [AdainResBlk1d]
+  @ModuleInfo var F0: [AdainResBlk1d]
 
   /// Stack of AdaIN residual blocks for N (voicing) prediction
   /// Parallel to F0 branch with similar architecture
-  var N: [AdainResBlk1d]
+  @ModuleInfo var N: [AdainResBlk1d]
 
   /// Projection layer to convert F0 features to single-channel output
   var F0Proj: Conv1dInference

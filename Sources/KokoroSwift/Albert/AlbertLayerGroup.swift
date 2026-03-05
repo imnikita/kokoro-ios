@@ -6,7 +6,7 @@ import MLX
 import MLXNN
 
 class AlbertLayerGroup: Module {
-  var albertLayers: [AlbertLayer]
+  @ModuleInfo var albertLayers: [AlbertLayer]
 
   init(config: AlbertModelArgs, layerNum: Int, weights: [String: MLXArray]) {
     var layers: [AlbertLayer] = []

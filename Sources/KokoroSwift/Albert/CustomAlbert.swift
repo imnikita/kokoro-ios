@@ -8,9 +8,9 @@ import MLXNN
 // Custom Albert Model
 class CustomAlbert: Module {
   let config: AlbertModelArgs
-  var embeddings: AlbertEmbeddings
-  var encoder: AlbertEncoder
-  var pooler: Linear
+  @ModuleInfo var embeddings: AlbertEmbeddings
+  @ModuleInfo var encoder: AlbertEncoder
+  @ModuleInfo var pooler: Linear
 
   init(weights: [String: MLXArray], config: AlbertModelArgs) {
     self.config = config
